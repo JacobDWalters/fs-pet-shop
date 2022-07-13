@@ -1,6 +1,14 @@
 //gives acces to the fs commands to access files
 import fs from 'fs';
 
+// let read = new Promise((res, rej) => {
+//     fs.readFile('./pets.json', 'utf-8', (error, str) => {
+//         if(error) process.exit(1);
+        
+//         const data = JSON.parse(str);
+//     })
+// })
+
 // gives you the ability to grab the input word 
 const subcommand = process.argv[2];
 
@@ -9,62 +17,79 @@ switch(subcommand) {
     // if read is input
     case 'read': {
         // allows you to grab what is input as the index to read
-        const selector = process.argv[3];
+        const selector = parseInt(process.argv[3]);
         // go to the pets.json file and present that data
+        
         fs.readFile('./pets.json', 'utf-8', (error, str) => {
-            if (error) console.error('error');
+            if (error) process.exit(1);
+            
+            const data = JSON.parse(str);
 
             // log a message if the index is not one of the options
-            if (selector > 1 || selector < 0) {
-                console.error('Usage: node pets.js read INDEX')
+            if (data[selector] == undefined || selector < 0) {
+                console.error('Usage: node pets.js read INDEX');
             } else {
-                const data = JSON.parse(str);
-                console.log(data[selector], 'data');
+                console.log(data[selector]);
             }
         });
+        break;
     }
 
     // if create is input
     case 'create': {
-        // grab the inputs you need to create your pet
-        const age = parseInt(process.argv[3]);
-        const kind = process.argv[4];
-        const name = process.argv[5];
+        fs.readFile('./pets.json', 'utf-8', (error, str) => {
+            if (error) process.exit(1);
+            
+            var data = JSON.parse(str);
+    
+            // grab the inputs you need to create your pet
+            const age = parseInt(process.argv[3]);
+            const kind = process.argv[4];
+            const name = process.argv[5];
 
-        // create your pet if all the inputs are there
-        if(age && kind && name) {
-            let input = [{
-                "age": age,
-                "kind": kind,
-                "name": name
-            }]
+            // create your pet if all the inputs are there
+            if(age && kind && name) {
+                let input = {
+                    "age": age,
+                    "kind": kind,
+                    "name": name
+                };
 
-            // put your pet into json acceptable format
-            let inputJSON = JSON.stringify(input);
+                data.push(input);
 
-            // write a file with your new pet 
-            fs.writeFile('pets.json', inputJSON, (error) => {
-                if (error) console.error('error');
-                
-                // as a callback function read your new file
-                fs.readFile('pets.json', 'utf-8', (error, str) => {
-                    if (error) console.error('error');
-                    
-                    const data = JSON.parse(str);
-                    console.log(data);
+                // put your pet into json acceptable format
+                let inputJSON = JSON.stringify(data);
+
+                // write a file with your new pet 
+                fs.writeFile('pets.json', inputJSON, (error) => {
+                    if (error) process.exit(1);
+
+                    // as a callback function read your new file
+                    fs.readFile('pets.json', 'utf-8', (error, str) => {
+                    if (error) process.exit(1);
+
+                    const result = JSON.parse(str);
+                        console.log(result[result.length - 1]);
+                    })
                 })
-            })
-        // log a message if all the inputs are not present
-        } else {
-            console.error('Usage: node pets.js create AGE KIND NAME');
-        }
+            // log a message if all the inputs are not present
+            } else {
+                console.error('Usage: node pets.js create AGE KIND NAME');
+            }
+        });
+        break;
     }
 
+
     // if case is input
-    case 'update':
+    case 'update': {
+        break;
+    }
 
     // if destroy is input
-    case 'destroy':
+    case 'destroy': {
+        break;
+    }
 
     // if the input is not one of the options or nothing at all 
     default: {
