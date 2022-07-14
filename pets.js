@@ -1,14 +1,7 @@
+#!/usr/bin/env node
 
 //gives acces to the fs commands to access files
 import fs from 'fs';
-
-// let read = new Promise((res, rej) => {
-//     fs.readFile('./pets.json', 'utf-8', (error, str) => {
-//         if(error) process.exit(1);
-        
-//         const data = JSON.parse(str);
-//     })
-// })
 
 // gives you the ability to grab the input word 
 const subcommand = process.argv[2];
@@ -19,20 +12,25 @@ switch(subcommand) {
     case 'read': {
         // allows you to grab what is input as the index to read
         const selector = parseInt(process.argv[3]);
+
         // go to the pets.json file and present that data
-        
         fs.readFile('./pets.json', 'utf-8', (error, str) => {
             if (error) process.exit(1);
-            
-            const data = JSON.parse(str);
+            let data = JSON.parse(str);
+
+            // allows you to grab what is input as the index to read
+            const index = parseInt(process.argv[3]);
 
             // log a message if the index is not one of the options
-            if (!selector) console.log(data);
+            if (!index) {
+                console.log(data);
+                return;
+            }
             
-            if (data[selector] == undefined || selector < 0) {
+            if (index >= data.length || index < 0) {
                 console.error('Usage: node pets.js read INDEX');
             } else {
-                console.log(data[selector]);
+                console.log(data[index]);
             }
         });
         break;
@@ -42,8 +40,7 @@ switch(subcommand) {
     case 'create': {
         fs.readFile('./pets.json', 'utf-8', (error, str) => {
             if (error) process.exit(1);
-            
-            var data = JSON.parse(str);
+            let data = JSON.parse(str);
     
             // grab the inputs you need to create your pet
             const age = parseInt(process.argv[3]);
@@ -83,7 +80,7 @@ switch(subcommand) {
     case 'update': {
         fs.readFile('./pets.json', 'utf-8', (error, str) => {
             if (error) process.exit(1);
-            var data = JSON.parse(str);
+            let data = JSON.parse(str);
     
             // grab the inputs you need to update
             const index = process.argv[3]
@@ -119,7 +116,7 @@ switch(subcommand) {
     case 'destroy': {
         fs.readFile('./pets.json', 'utf-8', (error, str) => {
             if (error) process.exit(1);
-            var data = JSON.parse(str);
+            let data = JSON.parse(str);
     
             // grab the input you want to remove
             const index = process.argv[3]
