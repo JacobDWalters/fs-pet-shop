@@ -1,24 +1,22 @@
 import http from "http";
-import fs from "fs"
+import fs from "fs/promises";
 
 const petRegExp = /^\/pets\/(.*)$/;
 
 
 const server = http.createServer((req, res) => {
     const matches = req.url.match(petRegExp); 
-    
+    // using promis from shared
     if (req.url === "/pets" && req.method === "GET") {
-        fs.readFile('pets.json', 'utf-8', (err, str) => {
-            if (err) console.log("error");
-
+        fs.readFile("pets.json", "utf-8").then((str) => {
             let data = JSON.parse(str);
-            res.setHeader("Content-Type", "application/json");
+            // res.setHeader("Content-Type", "application/json");
             res.end(JSON.stringify(data));
         });
 
     } else if (matches && req.method === "GET") {
         const id = matches[1];
-        fs.readFile('pets.json', 'utf-8', (err, str) => {
+        fs.readFile('pets.json', 'utf-8').then((str) => {
             let data = JSON.parse(str);
 
             if (data[id]) {
@@ -37,7 +35,7 @@ const server = http.createServer((req, res) => {
 
         req.on("end", () => {
             const newPet = JSON.parse(body);
-            fs.readFile("pets.json", "utf-8", (err, str) => {
+            fs.readFile("pets.json", "utf-8").then((str) => {
                 if (err) console.log("error");
                 
                 const existingPets = JSON.parse(str);
@@ -56,8 +54,6 @@ const server = http.createServer((req, res) => {
         res.end();
     }
 });
-
-
 
 server.listen(3000, () => {
     console.log("server started on port 3000");
