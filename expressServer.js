@@ -3,15 +3,7 @@ import fs from 'fs/promises';
 
 const app = express();
 const PORT = 3000;
-// const readUrl = "/pets"
-// const readIndexUrl = "/pets/:index"
 
-// const filter = function (req, res, next) {
-//     if (req.url !== readUrl || req.url !==readIndexUrl) res.sendStatus(404);
-//     else next();
-// }
-
-// app.use(filter);
 app.use(express.json());
 
 // Get request to handle the whole list
