@@ -1,10 +1,15 @@
 import express, { application } from 'express';
 import fs from 'fs/promises';
+import morgan from 'morgan';
+import bodyParser from 'body-parser';
+
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+app.use(morgan());
+app.use(bodyParser());
 
 // Get request to handle the whole list
 app.get("/pets", (req, res) => {
